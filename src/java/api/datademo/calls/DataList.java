@@ -1,4 +1,4 @@
-package api.datademo;
+package api.datademo.calls;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
