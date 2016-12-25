@@ -1,6 +1,7 @@
 package api.datademo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -24,29 +25,34 @@ public class DataServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
     }
-    
-    
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json;charset=UTF-8");
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "GET,POST");
-        response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        try (final PrintWriter out = response.getWriter()) {
-            final List<Data> list = new ArrayList<>();
-            final Data d1 = new Data();
-            d1.setId(0);
-            d1.setBucket("declan2");
-            d1.setLive(true);
-            d1.setFiles(2222);
-            d1.setBatch(33);
-            d1.setRedShift("mytable");
-            list.add(d1);
 
-            final DataList dl = new DataList();
-            dl.setList(list);
-            out.println(mapper.writeValueAsString(dl));
+        final String method = request.getMethod();
+        if ("POST".equals(method)) {
+            final BufferedReader br = request.getReader();
+            final StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\r\n");
+            }
+            response.setContentType("application/json;charset=UTF-8");
+            try (final PrintWriter out = response.getWriter()) {
+                final List<Data> list = new ArrayList<>();
+                final Data d1 = new Data();
+                d1.setId(0);
+                d1.setBucket("declan2");
+                d1.setLive(true);
+                d1.setFiles(2222);
+                d1.setBatch(33);
+                d1.setRedShift("mytable");
+                list.add(d1);
+
+                final DataList dl = new DataList();
+                dl.setList(list);
+                out.println(mapper.writeValueAsString(dl));
+            }
         }
     }
 
